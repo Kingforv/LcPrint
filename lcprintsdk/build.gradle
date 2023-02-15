@@ -1,0 +1,84 @@
+plugins {
+    id 'com.android.library'
+    id 'maven-publish' //新添加的
+}
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        testFunctionalTest true
+        project.version = android.defaultConfig.versionName
+        project.archivesBaseName = "lcprintsdk"+ project.version
+
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+//新添加的
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                // Applies the component for the release build variant.
+                from components.release
+
+                // You can then customize attributes of the publication as shown below.
+                groupId = 'com.example.lc_print_sdk' // 这是需要打包的Module的包名，根据需要更换
+                artifactId = 'printSDK' //多模块打包时用到，只打包一个Module用不到
+                version = '1.0.0'
+            }
+        }
+    }
+}
+
+
+dependencies {
+
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation files('libs\\core_3.4.0.jar')
+//    api files('libs\\PrinterAPI_V202107062100.jar')
+    api files('libs\\PrinterAPI_V202108242200.jar')
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+}
+def SDK_BASENAME = "PrintSDK";
+def sdkDestinationPath = "build/libs/";
+
+task makeJar(type: Copy) {
+    // 删除存在的
+    delete sdkDestinationPath + SDK_BASENAME + android.defaultConfig.versionName + ".jar"
+    // 设置拷贝的文件
+    from('build/intermediates/runtime_library_classes_jar/release/')
+    // 打进jar包后的文件目录
+    into('build/libs/')
+    // 将classes.jar放入build/libs/目录下
+    // include ,exclude参数来设置过滤
+    include('classes.jar')
+    // 重命名
+    rename('classes.jar', SDK_BASENAME + "_" + android.defaultConfig.versionName + ".jar")
+}
+makeJar.dependsOn(build)
+
