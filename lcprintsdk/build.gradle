@@ -87,22 +87,40 @@ makeJar.dependsOn(build)
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
-// 打包源码
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
+
+//指定生成的javadoc文档编码格式，防止javadoc中文乱码
+tasks.withType(Javadoc) {
+    options{
+        encoding "UTF-8"
+        charSet 'UTF-8'
+        links "http://docs.oracle.com/javase/8/docs/api"
+    }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
+    from sourceSets.main.allSource
 }
-task javadoc(type: Javadoc) {
-    failOnError  false
-    source = android.sourceSets.main.java.sourceFiles
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    classpath += configurations.compile
-}
-// 制作文档(Javadoc)
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
 }
+// 打包源码
+//task sourcesJar(type: Jar) {
+//    from android.sourceSets.main.java.srcDirs
+//    classifier = 'sources'
+//}
+//task javadoc(type: Javadoc) {
+//    failOnError  false
+//    source = android.sourceSets.main.java.sourceFiles
+//    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+//    classpath += configurations.compile
+//}
+//// 制作文档(Javadoc)
+//task javadocJar(type: Jar, dependsOn: javadoc) {
+//    classifier = 'javadoc'
+//    from javadoc.destinationDir
+//}
 artifacts {
     archives sourcesJar
     archives javadocJar
