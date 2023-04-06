@@ -48,6 +48,7 @@ afterEvaluate {
                 groupId = 'com.example.lc_print_sdk' // 这是需要打包的Module的包名，根据需要更换
                 artifactId = 'printSDK' //多模块打包时用到，只打包一个Module用不到
                 version = '1.0.0'
+                artifact javadocJar
             }
         }
     }
@@ -132,7 +133,8 @@ task javadoc(type: Javadoc) {
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
 //    from javadoc.destinationDir
-    from "$buildDir/javadoc"
+    from "${buildDir}/javadoc"
+
 }
 artifacts {
     archives sourcesJar
