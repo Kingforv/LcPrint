@@ -60,7 +60,7 @@ afterEvaluate {
 
 
 dependencies {
-
+    implementation 'androidx.annotation:annotation:1.2.0'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
@@ -121,6 +121,7 @@ task javadoc(type: Javadoc) {
 
     source = android.sourceSets.main.java.sourceFiles
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+
     failOnError false
 }
 
