@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'maven-publish' //新添加的
+    
 }
 
 android {
@@ -32,6 +33,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
 }
 //新添加的
 afterEvaluate {
@@ -63,9 +65,13 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+
 }
 def SDK_BASENAME = "PrintSDK";
 def sdkDestinationPath = "build/libs/";
+
+
 
 task makeJar(type: Copy) {
     // 删除存在的
@@ -84,6 +90,7 @@ makeJar.dependsOn(build)
 
 //---------------------------------------------
 // 指定编码
+
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
@@ -103,7 +110,7 @@ task sourcesJar(type: Jar) {
 }
 
 task javadoc(type: Javadoc) {
-    failOnError  false
+
     source = android.sourceSets.main.java.sourceFiles
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
     classpath += configurations.compile
