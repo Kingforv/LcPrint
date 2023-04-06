@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'maven-publish' //新添加的
-    
+
 }
 
 android {
@@ -114,11 +114,18 @@ task javadoc(type: Javadoc) {
     source = android.sourceSets.main.java.sourceFiles
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
     classpath += configurations.compile
+    options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PUBLIC
+    options.links("http://docs.oracle.com/javase/7/docs/api/")
+
+    // 将生成的 Javadoc 文档输出到 build/javadoc 目录下
+    options.addStringOption('d', "${project.buildDir}/javadoc")
 }
+
 // 制作文档(Javadoc)
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
-    from javadoc.destinationDir
+//    from javadoc.destinationDir
+    from "$buildDir/javadoc"
 }
 artifacts {
     archives sourcesJar
