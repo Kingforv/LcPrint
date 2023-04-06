@@ -77,7 +77,7 @@ task makeJar(type: Copy) {
     // 删除存在的
     delete sdkDestinationPath + SDK_BASENAME + android.defaultConfig.versionName + ".jar"
     // 设置拷贝的文件
-    from('build/intermediates/runtime_library_classes_jar/release/')
+    from(new File('build/intermediates/runtime_library_classes_jar/release/'))
     // 打进jar包后的文件目录
     into('build/libs/')
     // 将classes.jar放入build/libs/目录下
