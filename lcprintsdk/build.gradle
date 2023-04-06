@@ -72,35 +72,13 @@ dependencies {
 
 
 }
-def SDK_BASENAME = "PrintSDK";
-def sdkDestinationPath = "build/libs/";
-
-
-
-task makeJar(type: Copy) {
-    // 删除存在的
-    delete sdkDestinationPath + SDK_BASENAME + android.defaultConfig.versionName + ".jar"
-    // 设置拷贝的文件
-    from(new File('build/intermediates/runtime_library_classes_jar/release/'))
-    // 打进jar包后的文件目录
-    into('build/libs/')
-    // 将classes.jar放入build/libs/目录下
-    // include ,exclude参数来设置过滤
-    include('classes.jar')
-    // 重命名
-    rename('classes.jar', SDK_BASENAME + "_" + android.defaultConfig.versionName + ".jar")
-}
-makeJar.dependsOn(build)
 
 //---------------------------------------------
 // 指定编码
-
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
-
 //指定生成的javadoc文档编码格式，防止javadoc中文乱码
-
 tasks.withType(Javadoc) {
     options {
         encoding "UTF-8"
@@ -108,29 +86,20 @@ tasks.withType(Javadoc) {
         links "http://docs.oracle.com/javase/7/docs/api"
     }
 }
-
 task sourcesJar(type: Jar) {
     classifier = 'sources'
     from android.sourceSets.main.java.sourceFiles
 
 }
-
-
-
 task javadoc(type: Javadoc) {
-
     source = android.sourceSets.main.java.sourceFiles
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-
     failOnError false
 }
-
 // 制作文档(Javadoc)
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
-
-
 }
 artifacts {
     archives sourcesJar
