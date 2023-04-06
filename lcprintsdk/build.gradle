@@ -1,7 +1,6 @@
 plugins {
     id 'com.android.library'
     id 'maven-publish' //新添加的
-
 }
 
 android {
@@ -48,8 +47,13 @@ afterEvaluate {
                 groupId = 'com.example.lc_print_sdk' // 这是需要打包的Module的包名，根据需要更换
                 artifactId = 'printSDK' //多模块打包时用到，只打包一个Module用不到
                 version = '1.0.0'
-                artifact javadocJar
+                artifact("$buildDir/docs/javadoc")
             }
+        }
+    }
+    repositories {
+        maven {
+            url 'https://jitpack.io'
         }
     }
 }
@@ -61,7 +65,6 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
     implementation files('libs\\core_3.4.0.jar')
-//    api files('libs\\PrinterAPI_V202107062100.jar')
     api files('libs\\PrinterAPI_V202108242200.jar')
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
@@ -97,43 +100,35 @@ tasks.withType(JavaCompile) {
 }
 
 //指定生成的javadoc文档编码格式，防止javadoc中文乱码
-//tasks.withType(Javadoc) {
-//    options{
-//        encoding "UTF-8"
-//        charSet 'UTF-8'
-//        links "http://docs.oracle.com/javase/8/docs/api"
-//    }
-//}
 
 tasks.withType(Javadoc) {
-    options.addStringOption('Xdoclint:none', '-quiet')
-    options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
-    options.links("https://docs.oracle.com/javase/8/docs/api/");
-    options.encoding "UTF-8"
+    options {
+        encoding "UTF-8"
+        charSet 'UTF-8'
+        links "http://docs.oracle.com/javase/7/docs/api"
+    }
 }
 
 task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
     classifier = 'sources'
+    from android.sourceSets.main.java.sourceFiles
+
 }
+
+
 
 task javadoc(type: Javadoc) {
 
     source = android.sourceSets.main.java.sourceFiles
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    classpath += configurations.compile
-    options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PUBLIC
-    options.links("http://docs.oracle.com/javase/7/docs/api/")
-
-    // 将生成的 Javadoc 文档输出到 build/javadoc 目录下
-    options.addStringOption('d', "${project.buildDir}/javadoc")
+    failOnError false
 }
 
 // 制作文档(Javadoc)
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
-//    from javadoc.destinationDir
-    from "${buildDir}/javadoc"
+    from javadoc.destinationDir
+
 
 }
 artifacts {
