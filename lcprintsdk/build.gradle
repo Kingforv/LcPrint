@@ -47,15 +47,23 @@ afterEvaluate {
                 groupId = 'com.example.lc_print_sdk' // 这是需要打包的Module的包名，根据需要更换
                 artifactId = 'printSDK' //多模块打包时用到，只打包一个Module用不到
                 version = '1.0.0'
-                artifact("$buildDir/docs/javadoc")
+                artifact javadocJar {
+                    classifier = 'javadoc'
+                }
+
+                javadoc {
+                    options {
+                        encoding "UTF-8"
+                        charSet 'UTF-8'
+                        author true
+                        version true
+                        links("http://docs.oracle.com/javase/8/docs/api/")
+                    }
+                }
             }
         }
     }
-    repositories {
-        maven {
-            url 'https://jitpack.io'
-        }
-    }
+
 }
 
 
